@@ -1,12 +1,14 @@
 from smartapi import SmartConnect
 import zope.interface
-
+import Symbol
 
 class MainSystem:
     def __init__(self, ClientCode, Pin):
         self.ClientCode = ClientCode
         self.Pin = Pin
         self.obj = SmartConnect(api_key="l5g7IX0d")
+        self.symbols = Symbol.Symbols()
+        self.symbols.load()
 
     def login(self, totp: str):
         self.data = self.obj.generateSession(self.ClientCode, self.Pin, totp)

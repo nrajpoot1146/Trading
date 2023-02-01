@@ -12,7 +12,7 @@ class WebSocket:
         self.ss._on_close = self.on_close
 
         # SAMPLE: nse_cm|2885&nse_cm|1594&nse_cm|11536&nse_cm|3045
-        self.token = "nse_cm|26000&nse_fo|42336"
+        self.token = "nse_fo|42336&nse_cm|26000"
         # token="mcx_fo|226745&mcx_fo|220822&mcx_fo|227182&mcx_fo|221599"
         self.task = "mw"   # mw|sfi|dp
 
@@ -26,9 +26,9 @@ class WebSocket:
         self.ss.ws.close()
 
     def on_message(self, ws, message):
-        #os.system("cls")
+        # os.system("cls")
         Response.SocketResponce.ParseResponse(message)
-        print("Ticks: {}".format(message))
+        # print("Ticks: {}".format(message))
         # sf = Data.Feed.CreateFeed(message)
         # if sf != None:
         #     print(sf.name, sf.lastTradePrice)
