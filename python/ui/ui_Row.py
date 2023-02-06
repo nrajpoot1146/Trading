@@ -9,29 +9,61 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 
 
-class Ui_Form(object):
-    def setupUi(self, Form):
-        Form.setObjectName("Form")
-        Form.resize(269, 34)
-        self.horizontalLayoutWidget = QtWidgets.QWidget(Form)
-        self.horizontalLayoutWidget.setGeometry(QtCore.QRect(0, 0, 157, 30))
-        self.horizontalLayoutWidget.setObjectName("horizontalLayoutWidget")
-        self.horizontalLayout = QtWidgets.QHBoxLayout(self.horizontalLayoutWidget)
-        self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
+class Ui_Row(object):
+    def setupUi(self, Row):
+        Row.setObjectName("Row")
+        Row.resize(319, 104)
+        Row.setMaximumSize(QtCore.QSize(16777215, 104))
+        Row.setStyleSheet("QWidget{\n"
+"    margin: 0px;\n"
+"}\n"
+"\n"
+"QLabel{\n"
+"    border: 1px solid grey;\n"
+"    background-color: white;\n"
+"}\n"
+"\n"
+"QPushButton{\n"
+"    height: 100%;\n"
+"}")
+        self.horizontalLayout_2 = QtWidgets.QHBoxLayout(Row)
+        self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout_2.setSpacing(0)
+        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
+        self.horizontalLayout = QtWidgets.QHBoxLayout()
+        self.horizontalLayout.setSizeConstraint(QtWidgets.QLayout.SizeConstraint.SetMinimumSize)
+        self.horizontalLayout.setSpacing(0)
         self.horizontalLayout.setObjectName("horizontalLayout")
-        self.label = QtWidgets.QLabel(self.horizontalLayoutWidget)
-        self.label.setObjectName("label")
-        self.horizontalLayout.addWidget(self.label)
-        self.pushButton = QtWidgets.QPushButton(self.horizontalLayoutWidget)
-        self.pushButton.setAutoFillBackground(False)
-        self.pushButton.setObjectName("pushButton")
-        self.horizontalLayout.addWidget(self.pushButton)
+        self.lCallOIChange = QtWidgets.QLabel(Row)
+        self.lCallOIChange.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+        self.lCallOIChange.setObjectName("lCallOIChange")
+        self.horizontalLayout.addWidget(self.lCallOIChange)
+        self.pbCall = QtWidgets.QPushButton(Row)
+        self.pbCall.setObjectName("pbCall")
+        self.horizontalLayout.addWidget(self.pbCall)
+        self.lStrikePrice = QtWidgets.QLabel(Row)
+        self.lStrikePrice.setMaximumSize(QtCore.QSize(16777215, 16777215))
+        self.lStrikePrice.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+        self.lStrikePrice.setObjectName("lStrikePrice")
+        self.horizontalLayout.addWidget(self.lStrikePrice)
+        self.pbPut = QtWidgets.QPushButton(Row)
+        self.pbPut.setStyleSheet("height: 100%")
+        self.pbPut.setObjectName("pbPut")
+        self.horizontalLayout.addWidget(self.pbPut)
+        self.lPutOIChange = QtWidgets.QLabel(Row)
+        self.lPutOIChange.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+        self.lPutOIChange.setObjectName("lPutOIChange")
+        self.horizontalLayout.addWidget(self.lPutOIChange)
+        self.horizontalLayout_2.addLayout(self.horizontalLayout)
 
-        self.retranslateUi(Form)
-        QtCore.QMetaObject.connectSlotsByName(Form)
+        self.retranslateUi(Row)
+        QtCore.QMetaObject.connectSlotsByName(Row)
 
-    def retranslateUi(self, Form):
+    def retranslateUi(self, Row):
         _translate = QtCore.QCoreApplication.translate
-        Form.setWindowTitle(_translate("Form", "Form"))
-        self.label.setText(_translate("Form", "TextLabel"))
-        self.pushButton.setText(_translate("Form", "PushButton"))
+        Row.setWindowTitle(_translate("Row", "Form"))
+        self.lCallOIChange.setText(_translate("Row", "TextLabel"))
+        self.pbCall.setText(_translate("Row", "PushButton"))
+        self.lStrikePrice.setText(_translate("Row", "TextLabel"))
+        self.pbPut.setText(_translate("Row", "PushButton"))
+        self.lPutOIChange.setText(_translate("Row", "TextLabel"))

@@ -46,17 +46,16 @@ class OrderDetails:
     
     def getJSONIFY(self):
         return {
-        "variety": self.variety.name,
-        "tradingsymbol": self.tradingsymbol,
-        "symboltoken": self.symboltoken,
-        "transactiontype": self.transactiontype.name,
-        "exchange": self.exchange.name,
-        "ordertype": self.ordertype.name,
-        "producttype": self.producttype.name,
-        "duration": self.duration,
-        "price": self.price,
-        "squareoff": self.squareoff,
-        "stoploss": self.stoploss,
-        "quantity": self.quantity
+            "variety": self.variety.name,
+            "tradingsymbol": self.tradingsymbol,
+            "symboltoken": self.symboltoken,
+            "transactiontype": self.transactiontype.name,
+            "exchange": self.exchange.name,
+            "ordertype": self.ordertype.name,
+            "producttype": self.producttype.name,
+            "duration": self.duration,
+            "price": self.price,
+            "squareoff": self.squareoff,
+            "stoploss": self.stoploss,
+            "quantity": self.quantity
         }
-        pass

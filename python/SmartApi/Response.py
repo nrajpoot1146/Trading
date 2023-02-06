@@ -6,11 +6,9 @@ threadlock = threading.Lock()
 
 class SocketResponce:
     @staticmethod
-    def ParseResponse(res):
+    def ParseResponse(res, subscribedSymbol:dict):
         dResponse = dict()
         dResponse['Feed'] = list()
-        # print("Tick: ")
-        threadlock.acquire()
         for r in res:
             if Task.Task.IsTask(r):
                 print("Task Recieved")
@@ -18,22 +16,13 @@ class SocketResponce:
                 print(task)
                 pass
             elif Data.Feed.IsFeed(r):
+                print("Feed Recieved", r)
                 feed = Data.Feed.CreateFeed(r)
                 if (feed.isScriptFeed()):
                     dResponse['Feed'].append(feed)
-                    print("Script Feed Recieved")
+                    subscribedSymbol[feed.token].onFeedRecieved(feed)
                 elif(feed.isTimeFeed()):
                     dResponse['timeFeed'] = feed
-                    print("Time Feed Recieved")
                 elif(feed.isIndexFeed()):
                     dResponse['Feed'].append(feed)
-                    print("Index Feed Recieved")
                 pass
-        
-        if 'timeFeed' in dResponse:
-            print(dResponse['timeFeed'].tValue, end=" ")
-        for f in dResponse['Feed']:
-            print(f.lastUpdateTime, f.lastTradedPrice, end=" ")
-        print()    
-        threadlock.release()
-        pass

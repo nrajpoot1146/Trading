@@ -1,4 +1,4 @@
-# Form implementation generated from reading ui file '.\MainWindow.ui'
+# Form implementation generated from reading ui file 'Row.ui'
 #
 # Created by: PyQt6 UI code generator 6.4.0
 #
@@ -9,62 +9,55 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 
 
-class Ui_MainWindow(object):
-    def setupUi(self, MainWindow):
-        MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(953, 598)
-        self.centralwidget = QtWidgets.QWidget(MainWindow)
-        self.centralwidget.setObjectName("centralwidget")
-        self.widget = QtWidgets.QWidget(self.centralwidget)
-        self.widget.setGeometry(QtCore.QRect(9, 0, 941, 271))
-        self.widget.setObjectName("widget")
-        self.CEWidget = QtWidgets.QWidget(self.widget)
-        self.CEWidget.setGeometry(QtCore.QRect(0, 0, 313, 261))
-        self.CEWidget.setStyleSheet("border: 1px solid red;")
-        self.CEWidget.setObjectName("CEWidget")
-        self.listView = QtWidgets.QListView(self.CEWidget)
-        self.listView.setGeometry(QtCore.QRect(0, 0, 311, 192))
-        self.listView.setObjectName("listView")
-        self.pushButton = QtWidgets.QPushButton(self.CEWidget)
-        self.pushButton.setGeometry(QtCore.QRect(90, 40, 93, 28))
-        self.pushButton.setObjectName("pushButton")
-        self.label = QtWidgets.QLabel(self.CEWidget)
-        self.label.setGeometry(QtCore.QRect(100, 90, 55, 16))
+class Ui_Form(object):
+    def setupUi(self, Form):
+        Form.setObjectName("Form")
+        Form.resize(607, 70)
+        self.horizontalLayoutWidget = QtWidgets.QWidget(Form)
+        self.horizontalLayoutWidget.setGeometry(QtCore.QRect(0, 10, 601, 51))
+        self.horizontalLayoutWidget.setObjectName("horizontalLayoutWidget")
+        self.horizontalLayout = QtWidgets.QHBoxLayout(self.horizontalLayoutWidget)
+        self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout.setObjectName("horizontalLayout")
+        self.label_2 = QtWidgets.QLabel(self.horizontalLayoutWidget)
+        self.label_2.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+        self.label_2.setObjectName("label_2")
+        self.horizontalLayout.addWidget(self.label_2)
+        self.pushButton_2 = QtWidgets.QPushButton(self.horizontalLayoutWidget)
+        self.pushButton_2.setIconSize(QtCore.QSize(30, 37))
+        self.pushButton_2.setFlat(False)
+        self.pushButton_2.setObjectName("pushButton_2")
+        self.horizontalLayout.addWidget(self.pushButton_2)
+        self.label = QtWidgets.QLabel(self.horizontalLayoutWidget)
+        self.label.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         self.label.setObjectName("label")
-        self.PWidget = QtWidgets.QWidget(self.widget)
-        self.PWidget.setGeometry(QtCore.QRect(314, 0, 313, 261))
-        self.PWidget.setStyleSheet("border: 1px solid red;")
-        self.PWidget.setObjectName("PWidget")
-        self.PEWidget = QtWidgets.QWidget(self.widget)
-        self.PEWidget.setGeometry(QtCore.QRect(628, 0, 313, 261))
-        self.PEWidget.setStyleSheet("border: 1px solid red;")
-        self.PEWidget.setObjectName("PEWidget")
-        MainWindow.setCentralWidget(self.centralwidget)
-        self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 953, 26))
-        self.menubar.setObjectName("menubar")
-        MainWindow.setMenuBar(self.menubar)
-        self.statusbar = QtWidgets.QStatusBar(MainWindow)
-        self.statusbar.setObjectName("statusbar")
-        MainWindow.setStatusBar(self.statusbar)
+        self.horizontalLayout.addWidget(self.label)
+        self.pushButton = QtWidgets.QPushButton(self.horizontalLayoutWidget)
+        self.pushButton.setObjectName("pushButton")
+        self.horizontalLayout.addWidget(self.pushButton)
+        self.label_3 = QtWidgets.QLabel(self.horizontalLayoutWidget)
+        self.label_3.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+        self.label_3.setObjectName("label_3")
+        self.horizontalLayout.addWidget(self.label_3)
 
-        self.retranslateUi(MainWindow)
-        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+        self.retranslateUi(Form)
+        QtCore.QMetaObject.connectSlotsByName(Form)
 
-        self.pushButton.clicked.connect(MainWindow.close)
-
-    def retranslateUi(self, MainWindow):
+    def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.pushButton.setText(_translate("MainWindow", "PushButton"))
-        self.label.setText(_translate("MainWindow", "TextLabel"))
+        Form.setWindowTitle(_translate("Form", "Form"))
+        self.label_2.setText(_translate("Form", "TextLabel"))
+        self.pushButton_2.setText(_translate("Form", "PushButton"))
+        self.label.setText(_translate("Form", "TextLabel"))
+        self.pushButton.setText(_translate("Form", "PushButton"))
+        self.label_3.setText(_translate("Form", "TextLabel"))
 
 
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
-    MainWindow = QtWidgets.QMainWindow()
-    ui = Ui_MainWindow()
-    ui.setupUi(MainWindow)
-    MainWindow.show()
+    Form = QtWidgets.QWidget()
+    ui = Ui_Form()
+    ui.setupUi(Form)
+    Form.show()
     sys.exit(app.exec())

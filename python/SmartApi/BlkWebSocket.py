@@ -1,7 +1,8 @@
 from smartapi import SmartWebSocket
 import threading
-import Data
+import time
 import Response
+import Symbol
 
 class WebSocket:
     def __init__(self, feedToken, clientCode):
@@ -11,10 +12,11 @@ class WebSocket:
         self.ss._on_error = self.on_error
         self.ss._on_close = self.on_close
 
-        # SAMPLE: nse_cm|2885&nse_cm|1594&nse_cm|11536&nse_cm|3045
-        self.token = "nse_fo|42336&nse_cm|26000"
-        # token="mcx_fo|226745&mcx_fo|220822&mcx_fo|227182&mcx_fo|221599"
-        self.task = "mw"   # mw|sfi|dp
+        self.subscribedSymbols = dict()
+
+    def printSubscribedSymbols(self):
+        for s in self.subscribedSymbols:
+            print(self.subscribedSymbols[s])
 
     def startStream(self):
         print("Start Stream")
@@ -26,13 +28,7 @@ class WebSocket:
         self.ss.ws.close()
 
     def on_message(self, ws, message):
-        # os.system("cls")
-        Response.SocketResponce.ParseResponse(message)
-        # print("Ticks: {}".format(message))
-        # sf = Data.Feed.CreateFeed(message)
-        # if sf != None:
-        #     print(sf.name, sf.lastTradePrice)
-        # pass
+        Response.SocketResponce.ParseResponse(message, self.subscribedSymbols)
 
     def on_open(self, ws):
         print("on open")
@@ -43,5 +39,19 @@ class WebSocket:
     def on_close(self, ws, code, reason):
         print("On Close")
 
-    def subscribe(self):
-        self.ss.subscribe(self.task, self.token)
+    def subscribe(self, symbol:Symbol.Symbol, task:str):
+        self.ss.subscribe(task, symbol.symbolInfo.getSubToken())
+        self.subscribedSymbols[symbol.symbolInfo.token] = symbol
+
+    def unsubscribe(self, symbol:Symbol.Symbol):
+        # self.ss.subscribe("mw", "")
+        self.stopStream()
+        self.subscribedSymbols.pop(symbol.symbolInfo.token)
+        self.startStream()
+        time.sleep(1)
+
+        try:
+            for s in self.subscribedSymbols:
+                self.ss.subscribe('mw', self.subscribedSymbols[s].symbolInfo.getSubToken())
+        except Exception:
+            pass
