@@ -40,6 +40,13 @@ class MainSystem:
 
         self.ui = UI.MainUi(self)
 
+    def getIndexSymbolsInfo(self):
+        res = []
+        for token in Symbol.WatchList:
+            symbol = self.symbolsInfo.find(lambda x: x.token == token)
+            res.extend(symbol)
+        return res
+
     def login(self, totp: str = None):
         totp = totpGenerator.now() #if totp == None else totp
         self.liveMarketSession = self.liveMarket.generateSession(self.ClientCode, self.Pin, totp)
@@ -77,6 +84,14 @@ class MainSystem:
             self.ws.subscribe(s.getSymbolInstance(), "mw")
             # time.sleep(0.00)
         pass
+
+    @dispatch(Symbol.Symbol)
+    def subscribe(self, symbol:Symbol.Symbol):
+        try:
+            self.ws.subscribe(symbol, "mw")
+        except Exception as e:
+            print(e.__traceback__)
+            pass
     
     @dispatch(str)
     def subscribe(self, token:str):

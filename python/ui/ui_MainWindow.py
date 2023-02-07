@@ -25,7 +25,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_2.setSpacing(0)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
         self.widget_2 = QtWidgets.QWidget(self.widget)
-        self.widget_2.setMaximumSize(QtCore.QSize(256, 28))
+        self.widget_2.setMaximumSize(QtCore.QSize(365, 28))
         self.widget_2.setObjectName("widget_2")
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.widget_2)
         self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)

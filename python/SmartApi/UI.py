@@ -24,29 +24,60 @@ class MainUi(QtWidgets.QMainWindow):
         self.mainWindow.show()
         self.system = system
 
-        self.selectedOptionChains = self.system.symbolsInfo.getSymbolNearCurrentPrice('NIFTY', 17751, '09FEB2023')
-        self.mainWindow.updateSymbols(self.selectedOptionChains)
-
     def run(self):
         self.app.exec()
 
+
+tr = False
 class MainWindow(QtWidgets.QMainWindow):
+    updateSymbolSignal = QtCore.pyqtSignal(list)
 
     def __init__(self, system):
         super(MainWindow, self).__init__()
         uic.load_ui.loadUi(currDir + r'\..\ui\MainWindow.ui', self)
         self.system = system
+        self.selectedOptionChains = []
+
         self.actionLogin.triggered.connect(self.onActionLoginClick)
         self.actionLogout.triggered.connect(self.onActionLogoutClick)
         self.start.clicked.connect(self.onStartClick)
         sys.stdout = Stream(newText=self.addInConsole)
         self.teConsole.setReadOnly(True)
+        self.indexWatchList = self.system.getIndexSymbolsInfo()
+
+        for i in self.indexWatchList:
+            self.cbIndices.addItem(i.symbol)
+
+        self.cbIndices.activated[int].connect(self.onActivated)
+        self.onFlagUpdate = False
+        self.updateSymbolSignal.connect(self.updateSymbols)
+
+    def onActivated(self, index):
+        self.system.subscribe(self.indexWatchList[index].getSymbolInstance())
+        for i in range(len(self.indexWatchList)):
+            if (i != index):
+                self.indexWatchList[i].getSymbolInstance().unSubscribeOnFeedRecived(self.onPriceUpdate)
+        self.indexWatchList[index].getSymbolInstance().subscribeOnFeedRecived(self.onPriceUpdate)
+        # self.onFlagUpdate = False
+
+    def onPriceUpdate(self, symbol, data):
+        self.lindexltp.setText(data.lastTradedPrice)
+
+        if self.onFlagUpdate == False:
+            self.selectedOptionChains = self.system.symbolsInfo.getSymbolNearCurrentPrice(symbol.symbolInfo.name, float(data.lastTradedPrice), '09FEB2023')
+            self.onFlagUpdate = True
+            self.updateSymbolSignal.emit(self.selectedOptionChains)
 
     def addInConsole(self, text):
         self.teConsole.insertPlainText(text)
         self.teConsole.moveCursor(QtGui.QTextCursor.MoveOperation.End)
     
     def updateSymbols(self, symbols):
+        while self.verticalLayout.count():
+            item = self.verticalLayout.takeAt(0)
+            widget = item.widget()
+            if widget:
+                widget.deleteLater()
         tempres = dict()
         for r in symbols:
             if r.getStrikePrice() not in tempres:
@@ -70,7 +101,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def onStartClick(self):
         try:
-            self.system.subscribe(self.system.ui.selectedOptionChains)
+            self.system.subscribe(self.selectedOptionChains)
         except Exception as e:
             print(e.__traceback__.tb_frame)
         
@@ -129,3 +160,4 @@ class Row(QWidget):
             self.putoisigna.emit(data.perChange)
         # self.lPutOIChange.setText(data.volume)
         pass
+        

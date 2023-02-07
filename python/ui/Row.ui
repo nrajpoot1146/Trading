@@ -60,7 +60,7 @@ QPushButton{
      <item>
       <widget class="QLabel" name="lCallOIChange">
        <property name="text">
-        <string>TextLabel</string>
+        <string>NA</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
@@ -70,7 +70,7 @@ QPushButton{
      <item>
       <widget class="QPushButton" name="pbCall">
        <property name="text">
-        <string>PushButton</string>
+        <string>LTP</string>
        </property>
       </widget>
      </item>
@@ -83,7 +83,7 @@ QPushButton{
         </size>
        </property>
        <property name="text">
-        <string>TextLabel</string>
+        <string>Strike Price</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
@@ -96,14 +96,14 @@ QPushButton{
         <string notr="true">height: 100%</string>
        </property>
        <property name="text">
-        <string>PushButton</string>
+        <string>LTP</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QLabel" name="lPutOIChange">
        <property name="text">
-        <string>TextLabel</string>
+        <string>NA</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>

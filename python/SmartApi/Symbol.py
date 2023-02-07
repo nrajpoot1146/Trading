@@ -54,7 +54,7 @@ class SymbolInfo:
         return Exchange[self.exch_seg] + "|" + self.token
 
     def isDerivative(self):
-        return self.instrumenttype == "OPTIDX"
+        return "OPT" in self.instrumenttype
 
     def getDrivativeType(self):
         if (self.isDerivative()):
@@ -136,10 +136,12 @@ class SymbolsInfo:
             if r.getStrikePrice() >= price:
                 break
             i += 1
-        start = i-6 if i-6 >= 0 else 0
+        start = i-10 if i-10 >= 0 else 0
         end = start+22 if start+2 < len(res) else len(res)
         res = res[start: end]
         return res
+    
+WatchList = ['26009', '26000', '246083']
 
 
 class ISymbol(ABC):
@@ -163,8 +165,9 @@ class Symbol(ISymbol):
     def subscribeOnFeedRecived(self, callable):
         self._onFeedRecieved.append(callable)
 
-    def unsubscribeOnFeedRecived(self, callable):
-        self._onFeedRecieved.remove(callable)
+    def unSubscribeOnFeedRecived(self, callable):
+        if callable in self._onFeedRecieved:
+            self._onFeedRecieved.remove(callable)
 
     def __onFeedRecieved(self, symbolInfo: SymbolInfo, data: Data.ScriptFeed):
         print("----------------------------------------------")
@@ -175,12 +178,14 @@ class Symbol(ISymbol):
 
     def __str__(self):
         return self.symbolInfo.__str__()
-
+    
+def hello():
+    pass
 
 if __name__ == '__main__':
     symbol = SymbolsInfo()
     symbol.load()
-    ls = symbol.getSymbolNearCurrentPrice('NIFTY', 17000, '09FEB2023')
-    for i in ls:
-        print(ls[i][0].symbol, i, ls[i][1].symbol)
-    pass
+    ls = symbol.find(lambda x: x.token == '26000')
+    ls[0].getSymbolInstance().subscribeOnFeedRecived(hello)
+    ls[0].getSymbolInstance().unSubscribeOnFeedRecived(hello)
+    print()

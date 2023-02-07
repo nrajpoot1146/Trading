@@ -62,8 +62,8 @@ class Ui_Row(object):
     def retranslateUi(self, Row):
         _translate = QtCore.QCoreApplication.translate
         Row.setWindowTitle(_translate("Row", "Form"))
-        self.lCallOIChange.setText(_translate("Row", "TextLabel"))
-        self.pbCall.setText(_translate("Row", "PushButton"))
-        self.lStrikePrice.setText(_translate("Row", "TextLabel"))
-        self.pbPut.setText(_translate("Row", "PushButton"))
-        self.lPutOIChange.setText(_translate("Row", "TextLabel"))
+        self.lCallOIChange.setText(_translate("Row", "NA"))
+        self.pbCall.setText(_translate("Row", "LTP"))
+        self.lStrikePrice.setText(_translate("Row", "Strike Price"))
+        self.pbPut.setText(_translate("Row", "LTP"))
+        self.lPutOIChange.setText(_translate("Row", "NA"))
