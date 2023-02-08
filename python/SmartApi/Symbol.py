@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 import Data
 import json
 import UI
+import LocThread
 
 from enum import Enum
 
@@ -156,11 +157,19 @@ class Symbol(ISymbol):
         super().__init__()
         self.symbolInfo: SymbolInfo = symbolInfo
         self._onFeedRecieved = list()
+        self.threads = []
 
     def onFeedRecieved(self, data: Data.ScriptFeed):
         if (self._onFeedRecieved != None):
             for f in self._onFeedRecieved:
-                f(self, data)
+                try:
+                    f(self, data)
+                    # self.lcw = LocThread.SymbolOnFeedRecievedThread(threadList=self.threads,target=f, args=[self, data])
+                    # self.lcw.start()
+                    # print(len(self.threads))
+                except Exception as e:
+                    print(e.args)
+                    self.unSubscribeOnFeedRecived(f)
     
     def subscribeOnFeedRecived(self, callable):
         self._onFeedRecieved.append(callable)

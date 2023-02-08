@@ -6,7 +6,7 @@ sys.path.append('E:/Trading/python/')
 import threading
 
 currDir = os.path.dirname(__file__)
-from PyQt6.QtWidgets import QApplication, QLabel, QWidget, QPushButton
+from PyQt6.QtWidgets import QApplication, QWidget
 from PyQt6 import uic, QtWidgets, QtGui, QtCore
 
 lock = threading.Lock()
@@ -41,7 +41,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.actionLogin.triggered.connect(self.onActionLoginClick)
         self.actionLogout.triggered.connect(self.onActionLogoutClick)
         self.start.clicked.connect(self.onStartClick)
-        sys.stdout = Stream(newText=self.addInConsole)
+        self.stop.clicked.connect(self.onStopClick)
+        self.stop.setEnabled(False)
+        # sys.stdout = Stream(newText=self.addInConsole)
         self.teConsole.setReadOnly(True)
         self.indexWatchList = self.system.getIndexSymbolsInfo()
 
@@ -53,14 +55,37 @@ class MainWindow(QtWidgets.QMainWindow):
         self.updateSymbolSignal.connect(self.updateSymbols)
 
     def onActivated(self, index):
-        self.system.subscribe(self.indexWatchList[index].getSymbolInstance())
-        for i in range(len(self.indexWatchList)):
-            if (i != index):
-                self.indexWatchList[i].getSymbolInstance().unSubscribeOnFeedRecived(self.onPriceUpdate)
-        self.indexWatchList[index].getSymbolInstance().subscribeOnFeedRecived(self.onPriceUpdate)
+        try:
+            self.system.subscribe(self.indexWatchList[index].getSymbolInstance())
+            for i in range(len(self.indexWatchList)):
+                if (i != index):
+                    self.indexWatchList[i].getSymbolInstance().unSubscribeOnFeedRecived(self.onPriceUpdate)
+            self.indexWatchList[index].getSymbolInstance().subscribeOnFeedRecived(self.onPriceUpdate)
+            self.cbIndices.setEnabled(False)
+            self.stop.setEnabled(True)
+        except Exception as e:
+            pass
         # self.onFlagUpdate = False
 
     def onPriceUpdate(self, symbol, data):
+
+        prevPrice = 0.0
+        newPrice = 0.0
+        try:
+            prevPrice = float(self.lindexltp.text())
+        except Exception as e:
+            pass
+
+        try:
+            newPrice = float(data.lastTradedPrice)
+        except Exception as e:
+            pass
+
+        if newPrice > prevPrice:
+            self.lindexltp.setStyleSheet("color: green")
+        elif newPrice < prevPrice:
+            self.lindexltp.setStyleSheet("color: red")
+
         self.lindexltp.setText(data.lastTradedPrice)
 
         if self.onFlagUpdate == False:
@@ -89,6 +114,8 @@ class MainWindow(QtWidgets.QMainWindow):
             r = Row(s, tempres[s][0], tempres[s][1])
             self.verticalLayout.addWidget(r)
 
+        self.system.subscribe(self.selectedOptionChains)
+
     def onActionLoginClick(self):
         self.system.login()
         self.system.ws.startStream()
@@ -104,10 +131,25 @@ class MainWindow(QtWidgets.QMainWindow):
             self.system.subscribe(self.selectedOptionChains)
         except Exception as e:
             print(e.__traceback__.tb_frame)
+
+    def onStopClick(self):
+        self.system.ws.stopStream()
+        self.system.ws.startStream()
+        # self.system.ws.unSubscribeAll()
+        self.cbIndices.setEnabled(True)
+        self.stop.setEnabled(False)
+        self.onFlagUpdate = False
+
         
 class Row(QWidget):
-    calloisigna = QtCore.pyqtSignal(str)
-    putoisigna = QtCore.pyqtSignal(str)
+    """
+        class to represnt pair of Call and put
+    """
+    calloisignal = QtCore.pyqtSignal(str)
+    putoisignal = QtCore.pyqtSignal(str)
+    putLTPsignal = QtCore.pyqtSignal(str)
+    callLTPsignal = QtCore.pyqtSignal(str)
+
     def __init__(self, strikePrice, ceSymbol, peSymbol):
         super(Row, self).__init__()
         uic.load_ui.loadUi(currDir + r'\..\ui\Row.ui', self)
@@ -126,8 +168,10 @@ class Row(QWidget):
         self.peSymbol.getSymbolInstance().subscribeOnFeedRecived(self.onPELTPChange)
         self.peSymbol.getSymbolInstance().subscribeOnFeedRecived(self.onPEOIChange)
 
-        self.calloisigna.connect(self.lCallOIChange.setText)
-        self.putoisigna.connect(self.lPutOIChange.setText)
+        self.calloisignal.connect(self.lCallOIChange.setText)
+        self.putoisignal.connect(self.lPutOIChange.setText)
+        self.putLTPsignal.connect(self.pbPut.setText)
+        self.callLTPsignal.connect(self.pbCall.setText)
 
     def onCELTPClick(self, e):
         print("onCELTPClick", e)
@@ -142,22 +186,95 @@ class Row(QWidget):
         pass
 
     def onCELTPChange(self, symbol, data):
-        self.pbCall.setText(data.lastTradedPrice)
+        prevPrice = 0.0
+        newPrice = 0.0
+        try:
+            prevPrice = float(self.pbCall.text())
+        except Exception as e:
+            pass
+
+        try:
+            newPrice = float(data.lastTradedPrice)
+        except Exception as e:
+            pass
+
+        if newPrice > prevPrice:
+            self.pbCall.setStyleSheet("color: green; background-color: yellow;")
+        elif newPrice < prevPrice:
+            self.pbCall.setStyleSheet("color: red; background-color: yellow;")
+
+        self.callLTPsignal.emit(str(newPrice))
         pass
 
     def onPELTPChange(self, symbol, data):
-        self.pbPut.setText(data.lastTradedPrice)
+        prevPrice = 0.0
+        newPrice = 0.0
+        # try:
+        #     prevPrice = float(self.pbPut.text())
+        # except Exception as e:
+        #     pass
+
+        try:
+            newPrice = float(data.lastTradedPrice)
+        except Exception as e:
+            pass
+
+        # if newPrice > prevPrice:
+        #     self.pbPut.setStyleSheet("color: green")
+        # elif newPrice < prevPrice:
+        #     self.pbPut.setStyleSheet("color: red")
+
+        
+        self.putLTPsignal.emit(str(newPrice))
         pass
 
     def onCEOIChange(self, symbol, data):
-        if data.perChange != None and data.perChange != "":
-            self.calloisigna.emit(data.perChange)
-        # self.lCallOIChange.setText(data.volume)
+        # if data.perChange != None and data.perChange != "":
+        #     self.calloisigna.emit(data.perChange)
+
+        prevValue = 0.0
+        newValue = 0.0
+        # try:
+        #     prevValue = float(self.lCallOIChange.text())
+        # except Exception as e:
+        #     pass
+
+        try:
+            newValue = float(data.perChange)
+        except Exception as e:
+            pass
+
+        # if newValue > prevValue:
+        #     self.lCallOIChange.setStyleSheet("color: green")
+        # elif newValue < prevValue:
+        #     self.lCallOIChange.setStyleSheet("color: red")
+        # else:
+        #     newValue = prevValue
+        # self.lCallOIChange.setText(str(newValue))
+        self.calloisignal.emit(str(newValue))
         pass
 
     def onPEOIChange(self, symbol, data):
-        if data.perChange != None and data.perChange != "":
-            self.putoisigna.emit(data.perChange)
-        # self.lPutOIChange.setText(data.volume)
+        # if data.perChange != None and data.perChange != "":
+        #     self.putoisigna.emit(data.perChange)
+        prevValue = 0.0
+        newValue = 0.0
+        # try:
+        #     prevValue = float(self.lPutOIChange.text())
+        # except Exception as e:
+        #     pass
+
+        try:
+            newValue = float(data.perChange)
+        except Exception as e:
+            pass
+
+        # if newValue > prevValue:
+        #     self.lPutOIChange.setStyleSheet("color: green")
+        # elif newValue < prevValue:
+        #     self.lPutOIChange.setStyleSheet("color: red")
+
+        # self.lPutOIChange.setText(str(newValue))
+        self.putoisignal.emit(str(newValue))
         pass
         

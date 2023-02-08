@@ -5,12 +5,8 @@ import Symbol
 import pyotp
 import UI
 import os
-import threading
 from multipledispatch import dispatch
-import time
 
-from PyQt6.QtWidgets import QApplication, QLabel, QWidget, QPushButton
-from PyQt6 import uic, QtWidgets
 
 currDir = os.path.dirname(__file__)
 
@@ -72,6 +68,9 @@ class MainSystem:
 
     def getRefereshToken(self):
         return self.liveMarketSession['data']['refreshToken']
+    
+    def getAuthToken(self):
+        return self.liveMarketSession['data']['jwtToken']
     
     @dispatch(list)
     def subscribe(self, symbols:list):

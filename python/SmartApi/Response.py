@@ -16,7 +16,7 @@ class SocketResponce:
                 print(task)
                 pass
             elif Data.Feed.IsFeed(r):
-                print("Feed Recieved", r)
+                # print("Feed Recieved", r)
                 feed = Data.Feed.CreateFeed(r)
                 if (feed.isScriptFeed()):
                     dResponse['Feed'].append(feed)
