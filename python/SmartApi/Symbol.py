@@ -2,7 +2,6 @@ import requests
 from abc import ABC, abstractmethod
 import Data
 import json
-# import UI
 import LocThread
 
 from enum import Enum
@@ -97,8 +96,7 @@ class SymbolInfo:
 class SymbolsInfo:
     URL = 'https://margincalculator.angelbroking.com/OpenAPI_File/files/OpenAPIScripMaster.json'
 
-    def __init__(self, ui=None):
-        self.ui = ui
+    def __init__(self):
         self.ss = None
         pass
 
@@ -166,7 +164,7 @@ class Symbol(ISymbol):
                     # f(self, data)
                     self.lcw = LocThread.SymbolOnFeedRecievedThread(threadList=self.threads,target=f, args=[self, data])
                     self.lcw.start()
-                    print(len(self.threads))
+                    # print(len(self.threads))
                 except Exception as e:
                     print(e.args)
                     self.unSubscribeOnFeedRecived(f)

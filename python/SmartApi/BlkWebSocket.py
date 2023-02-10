@@ -1,5 +1,5 @@
 from smartapi import SmartWebSocket
-from smartapi import smartWebSocketV2
+# from smartapi import smartWebSocketV2
 import threading
 import time
 import Response
@@ -36,6 +36,7 @@ class WebSocket:
 
     def stopStream(self):
         self.subscribedSymbols.clear()
+        self.ss.task_dict.clear()
         print("Stop Stream")
         self.ss.ws.close()
 
