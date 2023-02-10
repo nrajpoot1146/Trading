@@ -4,6 +4,8 @@ from pathlib import Path
 # from System import MainSystem
 sys.path.append('E:/Trading/python/')
 import threading
+import Symbol
+import Data
 
 currDir = os.path.dirname(__file__)
 from PyQt6.QtWidgets import QApplication, QWidget
@@ -80,16 +82,24 @@ class MainWindow(QtWidgets.QMainWindow):
             newPrice = float(data.lastTradedPrice)
         except Exception as e:
             pass
-
+        
+        colorEffect = QtWidgets.QGraphicsColorizeEffect()
+        
+        
         if newPrice > prevPrice:
-            self.lindexltp.setStyleSheet("color: green")
+            # self.lindexltp.setStyleSheet("color: green")
+            colorEffect.setColor(QtCore.Qt.GlobalColor.darkGreen)
+            self.lindexltp.setGraphicsEffect(colorEffect)
         elif newPrice < prevPrice:
-            self.lindexltp.setStyleSheet("color: red")
+            # self.lindexltp.setStyleSheet("color: red")
+            colorEffect.setColor(QtCore.Qt.GlobalColor.red)
+            self.lindexltp.setGraphicsEffect(colorEffect)
 
+        
         self.lindexltp.setText(data.lastTradedPrice)
 
         if self.onFlagUpdate == False:
-            self.selectedOptionChains = self.system.symbolsInfo.getSymbolNearCurrentPrice(symbol.symbolInfo.name, float(data.lastTradedPrice), '09FEB2023')
+            self.selectedOptionChains = self.system.symbolsInfo.getSymbolNearCurrentPrice(symbol.symbolInfo.name, float(data.lastTradedPrice), '16FEB2023')
             self.onFlagUpdate = True
             self.updateSymbolSignal.emit(self.selectedOptionChains)
 
@@ -148,7 +158,8 @@ class Row(QWidget):
     calloisignal = QtCore.pyqtSignal(str)
     putoisignal = QtCore.pyqtSignal(str)
     putLTPsignal = QtCore.pyqtSignal(str)
-    callLTPsignal = QtCore.pyqtSignal(str)
+    CELTPChangeSignal = QtCore.pyqtSignal(Symbol.Symbol, Data.ScriptFeed)
+    PELTPChangeSignal = QtCore.pyqtSignal(Symbol.Symbol, Data.ScriptFeed)
 
     def __init__(self, strikePrice, ceSymbol, peSymbol):
         super(Row, self).__init__()
@@ -160,18 +171,26 @@ class Row(QWidget):
         self.pbCall.setText(ceSymbol.symbol)
         self._onCELTPClick = None
         self._onPELTPClick = None
+        
         self.pbPut.clicked.connect(self.onPELTPClick)
         self.pbCall.clicked.connect(self.onCELTPClick)
 
-        self.ceSymbol.getSymbolInstance().subscribeOnFeedRecived(self.onCELTPChange)
-        self.ceSymbol.getSymbolInstance().subscribeOnFeedRecived(self.onCEOIChange)
-        self.peSymbol.getSymbolInstance().subscribeOnFeedRecived(self.onPELTPChange)
-        self.peSymbol.getSymbolInstance().subscribeOnFeedRecived(self.onPEOIChange)
+        self.CELTPChangeSignal.connect(self.onCELTPChange)
+        self.PELTPChangeSignal.connect(self.onPELTPChange)
 
-        self.calloisignal.connect(self.lCallOIChange.setText)
-        self.putoisignal.connect(self.lPutOIChange.setText)
-        self.putLTPsignal.connect(self.pbPut.setText)
-        self.callLTPsignal.connect(self.pbCall.setText)
+        self.ceSymbol.getSymbolInstance().subscribeOnFeedRecived(lambda x, y: self.CELTPChangeSignal.emit(x, y))
+        self.ceSymbol.getSymbolInstance().subscribeOnFeedRecived(self.onCEOIChange)
+        self.peSymbol.getSymbolInstance().subscribeOnFeedRecived(self.PELTPChangeSignal.emit)
+        # self.peSymbol.getSymbolInstance().subscribeOnFeedRecived(self.onPEOIChange)
+
+        
+
+
+        #thread locks
+        self.ltpCallUpdateLock = threading.Lock()
+        self.ltpPutUpdateLock = threading.Lock()
+        # self.ltpUpdateLock = threading.Lock()
+        # self.ltpUpdateLock = threading.Lock()
 
     def onCELTPClick(self, e):
         print("onCELTPClick", e)
@@ -186,46 +205,66 @@ class Row(QWidget):
         pass
 
     def onCELTPChange(self, symbol, data):
+        # self.ltpCallUpdateLock.acquire()
         prevPrice = 0.0
         newPrice = 0.0
         try:
             prevPrice = float(self.pbCall.text())
         except Exception as e:
             pass
+        
+        try:
+            newPrice = float(data.lastTradedPrice)
+        except Exception as e:
+            pass
 
+        colorEffect = QtWidgets.QGraphicsColorizeEffect()
+        if newPrice > prevPrice:
+            # self.pbCall.setStyleSheet("color: green;")
+            colorEffect.setColor(QtCore.Qt.GlobalColor.darkGreen)
+            self.pbCall.setGraphicsEffect(colorEffect)
+        elif newPrice < prevPrice:
+            # self.pbCall.setStyleSheet("color: red;")
+            colorEffect.setColor(QtCore.Qt.GlobalColor.red)
+            self.pbCall.setGraphicsEffect(colorEffect)
+        
+        # l = QtWidgets.QLabel()
+        # l.setForegroundRole()
+        
+        
+        
+
+        self.pbCall.setText(str(newPrice))
+        # self.ltpCallUpdateLock.release()
+        pass
+
+    def onPELTPChange(self, symbol, data):
+        # self.ltpPutUpdateLock.acquire()
+        prevPrice = 0.0
+        newPrice = 0.0
+        try:
+            prevPrice = float(self.pbPut.text())
+        except Exception as e:
+            pass
+
+        colorEffect = QtWidgets.QGraphicsColorizeEffect()
         try:
             newPrice = float(data.lastTradedPrice)
         except Exception as e:
             pass
 
         if newPrice > prevPrice:
-            self.pbCall.setStyleSheet("color: green; background-color: yellow;")
+            # self.pbPut.setStyleSheet("color: green")
+            colorEffect.setColor(QtCore.Qt.GlobalColor.darkGreen)
+            self.pbPut.setGraphicsEffect(colorEffect)
         elif newPrice < prevPrice:
-            self.pbCall.setStyleSheet("color: red; background-color: yellow;")
-
-        self.callLTPsignal.emit(str(newPrice))
-        pass
-
-    def onPELTPChange(self, symbol, data):
-        prevPrice = 0.0
-        newPrice = 0.0
-        # try:
-        #     prevPrice = float(self.pbPut.text())
-        # except Exception as e:
-        #     pass
-
-        try:
-            newPrice = float(data.lastTradedPrice)
-        except Exception as e:
-            pass
-
-        # if newPrice > prevPrice:
-        #     self.pbPut.setStyleSheet("color: green")
-        # elif newPrice < prevPrice:
-        #     self.pbPut.setStyleSheet("color: red")
+            # self.pbPut.setStyleSheet("color: red")
+            colorEffect.setColor(QtCore.Qt.GlobalColor.red)
+            self.pbPut.setGraphicsEffect(colorEffect)
 
         
-        self.putLTPsignal.emit(str(newPrice))
+        self.pbPut.setText(str(newPrice))
+        # self.ltpPutUpdateLock.release()
         pass
 
     def onCEOIChange(self, symbol, data):
@@ -240,18 +279,19 @@ class Row(QWidget):
         #     pass
 
         try:
-            newValue = float(data.perChange)
+            newValue = float(data.volume)
         except Exception as e:
             pass
 
-        # if newValue > prevValue:
-        #     self.lCallOIChange.setStyleSheet("color: green")
-        # elif newValue < prevValue:
-        #     self.lCallOIChange.setStyleSheet("color: red")
-        # else:
-        #     newValue = prevValue
-        # self.lCallOIChange.setText(str(newValue))
-        self.calloisignal.emit(str(newValue))
+        if newValue > prevValue:
+            self.lCallOIChange.setStyleSheet("color: green")
+        elif newValue < prevValue:
+            self.lCallOIChange.setStyleSheet("color: red")
+        else:
+            newValue = prevValue
+            
+        self.lCallOIChange.setText(str(newValue))
+        # self.calloisignal.emit(str(newValue))
         pass
 
     def onPEOIChange(self, symbol, data):
