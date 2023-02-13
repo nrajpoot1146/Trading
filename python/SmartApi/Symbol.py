@@ -92,6 +92,39 @@ class SymbolInfo:
             .format(self.token, self.symbol, self.name, self.expiry, self.strike, self.lotsize, self.instrumenttype, self.exch_seg, self.tick_size)
         pass
 
+## Equity, FUTURE, OPTION, INDICES
+# can have future and option
+class SymbolInfoEquity(SymbolInfo):
+    pass
+
+# can have options
+class SymbolInfoFuture(SymbolInfo):
+    pass
+
+# 
+class SymbolInfoOption(SymbolInfo):
+    pass
+
+# can have future and options
+class SymbolInfoIndex(SymbolInfo):
+    def __init__(self):
+        super().__init__()
+
+        # key (Expiry) value SymbolInfoFuture
+        self.__futures = dict()
+
+        # key (Expiry) value SymbolInfoOption
+        self.__options = dict()
+    
+    def addFuture(self, symbolInfo:SymbolInfo):
+        if symbolInfo.expiry not in self.__futures:
+            self.__futures[symbolInfo.expiry] = list()
+        self.__futures[symbolInfo.expiry].append(symbolInfo)
+
+    def addOption(self, symbolInfo:SymbolInfo):
+        if symbolInfo.expiry not in self.__options:
+            self.__options[symbolInfo.expiry] = list()
+        self.__options[symbolInfo.expiry].append(symbolInfo)
 
 class SymbolsInfo:
     URL = 'https://margincalculator.angelbroking.com/OpenAPI_File/files/OpenAPIScripMaster.json'

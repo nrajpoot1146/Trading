@@ -16,6 +16,7 @@ class WebSocket:
         self.ss._on_close = self.on_close
 
         self.subscribedSymbols = dict()
+        self.__subscribedForTimeFeed = list()
     
     # def __init__(self, authtoken, apiKey, clientCode, feedToken):
     #     # self.ss2 = smartWebSocketV2()
@@ -41,7 +42,7 @@ class WebSocket:
         self.ss.ws.close()
 
     def on_message(self, ws, message):
-        Response.SocketResponce.ParseResponse(message, self.subscribedSymbols)
+        Response.SocketResponce.ParseResponse(message, self.subscribedSymbols, self.__subscribedForTimeFeed)
 
     def on_open(self, ws):
         print("on open")
@@ -51,6 +52,16 @@ class WebSocket:
 
     def on_close(self, ws, code, reason):
         print("On Close")
+
+    def subscribeForTimeFeed(self, callable):
+        self.__subscribedForTimeFeed.append(callable)
+        pass
+
+    def unsubscribeFromTimeFeed(self, callable):
+        try:
+            self.__subscribedForTimeFeed.remove(callable)
+        except Exception as e:
+            pass
 
     def subscribe(self, symbol:Symbol.Symbol, task:str):
         self.ss.subscribe(task, symbol.symbolInfo.getSubToken())

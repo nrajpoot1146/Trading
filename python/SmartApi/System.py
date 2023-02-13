@@ -6,6 +6,7 @@ import pyotp
 import UI
 import os
 from multipledispatch import dispatch
+import time
 
 
 currDir = os.path.dirname(__file__)
@@ -51,11 +52,10 @@ class MainSystem:
         if (self.liveMarketSession['message'] != 'SUCCESS'):
             print("login failled")
             return
-        
         print("Login Success")
+        time.sleep(0.05)
         
         self._createWebSocket()
-
         pass
 
     def logout(self):

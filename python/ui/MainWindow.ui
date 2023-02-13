@@ -114,18 +114,10 @@
        </item>
        <item>
         <widget class="QWidget" name="widget_3" native="true">
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>337</height>
-          </size>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">QWidget#widget_3{
-	border: 1px solid  black;
-}</string>
-         </property>
-         <layout class="QGridLayout" name="gridLayout">
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <property name="spacing">
+           <number>0</number>
+          </property>
           <property name="leftMargin">
            <number>0</number>
           </property>
@@ -138,24 +130,26 @@
           <property name="bottomMargin">
            <number>0</number>
           </property>
-          <property name="spacing">
-           <number>0</number>
-          </property>
-          <item row="0" column="0">
+          <item>
            <widget class="QWidget" name="widget_4" native="true">
             <property name="minimumSize">
              <size>
-              <width>0</width>
-              <height>30</height>
+              <width>400</width>
+              <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
               <width>16777215</width>
-              <height>30</height>
+              <height>16777215</height>
              </size>
             </property>
-            <layout class="QHBoxLayout" name="horizontalLayout_9">
+            <property name="styleSheet">
+             <string notr="true">QWidget#widget_3{
+	border: 1px solid  black;
+}</string>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_7">
              <property name="spacing">
               <number>0</number>
              </property>
@@ -172,103 +166,122 @@
               <number>0</number>
              </property>
              <item>
-              <widget class="QLabel" name="heading">
-               <property name="styleSheet">
-                <string notr="true">QLabel{
+              <widget class="QWidget" name="widget_10" native="true">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>30</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>16777215</width>
+                 <height>30</height>
+                </size>
+               </property>
+               <layout class="QHBoxLayout" name="horizontalLayout_9">
+                <property name="spacing">
+                 <number>0</number>
+                </property>
+                <property name="leftMargin">
+                 <number>0</number>
+                </property>
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <property name="rightMargin">
+                 <number>0</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>0</number>
+                </property>
+                <item>
+                 <widget class="QLabel" name="heading_2">
+                  <property name="styleSheet">
+                   <string notr="true">QLabel{
 	background-color: rgb(0, 0, 0);
 	color: rgb(255, 255, 255);
 }</string>
-               </property>
-               <property name="text">
-                <string>OI</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
-               </property>
+                  </property>
+                  <property name="text">
+                   <string>CE LTP</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="heading_3">
+                  <property name="styleSheet">
+                   <string notr="true">QLabel{
+	background-color: rgb(0, 0, 0);
+	color: rgb(255, 255, 255);
+}</string>
+                  </property>
+                  <property name="text">
+                   <string>Strike Price</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="heading_4">
+                  <property name="styleSheet">
+                   <string notr="true">QLabel{
+	background-color: rgb(0, 0, 0);
+	color: rgb(255, 255, 255);
+}</string>
+                  </property>
+                  <property name="text">
+                   <string>PE LTP</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
               </widget>
              </item>
              <item>
-              <widget class="QLabel" name="heading_2">
-               <property name="styleSheet">
-                <string notr="true">QLabel{
-	background-color: rgb(0, 0, 0);
-	color: rgb(255, 255, 255);
-}</string>
-               </property>
-               <property name="text">
-                <string>CE LTP</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLabel" name="heading_3">
-               <property name="styleSheet">
-                <string notr="true">QLabel{
-	background-color: rgb(0, 0, 0);
-	color: rgb(255, 255, 255);
-}</string>
-               </property>
-               <property name="text">
-                <string>Strike Price</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLabel" name="heading_4">
-               <property name="styleSheet">
-                <string notr="true">QLabel{
-	background-color: rgb(0, 0, 0);
-	color: rgb(255, 255, 255);
-}</string>
-               </property>
-               <property name="text">
-                <string>PE LTP</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLabel" name="heading_5">
-               <property name="styleSheet">
-                <string notr="true">QLabel{
-	background-color: rgb(0, 0, 0);
-	color: rgb(255, 255, 255);
-}</string>
-               </property>
-               <property name="text">
-                <string>OI</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
-               </property>
+              <widget class="QWidget" name="widget_11" native="true">
+               <layout class="QVBoxLayout" name="verticalLayout_6">
+                <property name="spacing">
+                 <number>0</number>
+                </property>
+                <property name="leftMargin">
+                 <number>0</number>
+                </property>
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <property name="rightMargin">
+                 <number>0</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>0</number>
+                </property>
+                <item>
+                 <layout class="QVBoxLayout" name="verticalLayout">
+                  <property name="spacing">
+                   <number>0</number>
+                  </property>
+                  <property name="sizeConstraint">
+                   <enum>QLayout::SetMinimumSize</enum>
+                  </property>
+                 </layout>
+                </item>
+               </layout>
               </widget>
              </item>
             </layout>
            </widget>
           </item>
-          <item row="1" column="0">
-           <widget class="QWidget" name="widget_10" native="true">
-            <layout class="QVBoxLayout" name="verticalLayout_6">
-             <item>
-              <layout class="QVBoxLayout" name="verticalLayout">
-               <property name="spacing">
-                <number>0</number>
-               </property>
-               <property name="sizeConstraint">
-                <enum>QLayout::SetMinimumSize</enum>
-               </property>
-              </layout>
-             </item>
-            </layout>
-           </widget>
+          <item>
+           <widget class="QWidget" name="widget_12" native="true"/>
           </item>
          </layout>
         </widget>
@@ -351,7 +364,7 @@
                   <property name="maximumSize">
                    <size>
                     <width>16777215</width>
-                    <height>48</height>
+                    <height>42</height>
                    </size>
                   </property>
                   <layout class="QHBoxLayout" name="horizontalLayout_4">
@@ -368,12 +381,26 @@
                     <number>0</number>
                    </property>
                    <property name="bottomMargin">
-                    <number>2</number>
+                    <number>0</number>
                    </property>
                    <item>
                     <widget class="QTextBrowser" name="textBrowser">
                      <property name="styleSheet">
                       <string notr="true">background-color: rgb(255, 255, 255);</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLabel" name="label">
+                     <property name="text">
+                      <string>SL</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLineEdit" name="lineEdit">
+                     <property name="styleSheet">
+                      <string notr="true">height: 100%</string>
                      </property>
                     </widget>
                    </item>

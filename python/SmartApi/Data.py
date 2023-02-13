@@ -1,4 +1,3 @@
-import json
 class Feed:
     def __init__(self, name):
         self.name = name
@@ -11,6 +10,7 @@ class Feed:
         elif (data['name'] == 'tm'):
             return TimeFeed.CreateFromJSON(data)
         return None
+  
     @staticmethod
     def IsFeed(r):
         if (type(r) == dict):
@@ -101,7 +101,6 @@ class ScriptFeed(Feed):
         self.settlementType = None
         self.data = None
         
-
     @staticmethod
     def CreateFromJSON(data):
         sf = ScriptFeed()

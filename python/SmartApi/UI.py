@@ -1,7 +1,6 @@
 import sys
 import os
 from pathlib import Path
-# from System import MainSystem
 sys.path.append('E:/Trading/python/')
 import threading
 import Symbol
@@ -57,7 +56,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.onFlagUpdate = False
         self.updateSymbolSignal.connect(self.updateSymbols)
 
-    def onActivated(self, index):
+    def onActivated(self, index:int):
         try:
             self.system.subscribe(self.indexWatchList[index].getSymbolInstance())
             for i in range(len(self.indexWatchList)):
@@ -69,7 +68,8 @@ class MainWindow(QtWidgets.QMainWindow):
         except Exception as e:
             pass
 
-    def onPriceUpdate(self, symbol, data):
+    # 
+    def onPriceUpdate(self, symbol:Symbol.Symbol, data:Data.ScriptFeed):
         prevPrice = 0.0
         newPrice = 0.0
         try:
@@ -92,15 +92,15 @@ class MainWindow(QtWidgets.QMainWindow):
             self.lindexltp.setText(data.lastTradedPrice)
 
         if self.onFlagUpdate == False:
-            self.selectedOptionChains = self.system.symbolsInfo.getSymbolNearCurrentPrice(symbol.symbolInfo.name, float(data.lastTradedPrice), '15FEB2023')
+            self.selectedOptionChains = self.system.symbolsInfo.getSymbolNearCurrentPrice(symbol.symbolInfo.name, float(data.lastTradedPrice), '16FEB2023')
             self.onFlagUpdate = True
             self.updateSymbolSignal.emit(self.selectedOptionChains)
 
-    def addInConsole(self, text):
+    def addInConsole(self, text:str):
         self.teConsole.insertPlainText(text)
         self.teConsole.moveCursor(QtGui.QTextCursor.MoveOperation.End)
     
-    def updateSymbols(self, symbols):
+    def updateSymbols(self, symbols:list):
         while self.verticalLayout.count():
             item = self.verticalLayout.takeAt(0)
             widget = item.widget()
@@ -152,12 +152,15 @@ class Row(QWidget):
     CELTPChangeSignal = QtCore.pyqtSignal(Symbol.Symbol, Data.ScriptFeed)
     PELTPChangeSignal = QtCore.pyqtSignal(Symbol.Symbol, Data.ScriptFeed)
 
-    def __init__(self, strikePrice, ceSymbol, peSymbol):
+    def __init__(self, strikePrice, ceSymbol:Symbol.Symbol, peSymbol:Symbol.Symbol):
         super(Row, self).__init__()
         uic.load_ui.loadUi(currDir + r'\..\ui\Row.ui', self)
         self.peSymbol = peSymbol
         self.ceSymbol = ceSymbol
         self.lStrikePrice.setText(str(strikePrice))
+
+        self.lCallOIChange.hide()
+        self.lPutOIChange.hide()
 
         self.pbPut.setText(peSymbol.symbol) 
         self.pbCall.setText(ceSymbol.symbol)
@@ -176,9 +179,9 @@ class Row(QWidget):
 
         # Register to recieve feeds from server
         self.ceSymbol.getSymbolInstance().subscribeOnFeedRecived(self.CELTPChangeSignal.emit)
-        self.ceSymbol.getSymbolInstance().subscribeOnFeedRecived(self.CEOIChangeSignal.emit)
+        # self.ceSymbol.getSymbolInstance().subscribeOnFeedRecived(self.CEOIChangeSignal.emit)
         self.peSymbol.getSymbolInstance().subscribeOnFeedRecived(self.PELTPChangeSignal.emit)
-        self.peSymbol.getSymbolInstance().subscribeOnFeedRecived(self.PEOIChangeSignal.emit)
+        # self.peSymbol.getSymbolInstance().subscribeOnFeedRecived(self.PEOIChangeSignal.emit)
 
     def onCELTPClick(self, e):
         print("onCELTPClick", e)
@@ -192,7 +195,7 @@ class Row(QWidget):
             self._onPELTPClick(self.peSymbol)
         pass
 
-    def onCELTPChange(self, symbol, data):
+    def onCELTPChange(self, symbol:Symbol.Symbol, data:Data.ScriptFeed):
         prevPrice = 0.0
         newPrice = 0.0
         try:
@@ -217,7 +220,7 @@ class Row(QWidget):
             self.pbCall.setGraphicsEffect(colorEffect)
             self.pbCall.setText(str(newPrice))
 
-    def onPELTPChange(self, symbol, data):
+    def onPELTPChange(self, symbol:Symbol.Symbol, data:Data.ScriptFeed):
         prevPrice = 0.0
         newPrice = 0.0
         try:
@@ -240,7 +243,7 @@ class Row(QWidget):
             self.pbPut.setGraphicsEffect(colorEffect)
             self.pbPut.setText(str(newPrice))
 
-    def onCEOIChange(self, symbol, data):
+    def onCEOIChange(self, symbol:Symbol.Symbol, data:Data.ScriptFeed):
         prevValue = 0.0
         newValue = 0.0
 
@@ -265,7 +268,7 @@ class Row(QWidget):
 
         pass
 
-    def onPEOIChange(self, symbol, data):
+    def onPEOIChange(self, symbol:Symbol.Symbol, data:Data.ScriptFeed):
         prevValue = 0.0
         newValue = 0.0
 
@@ -275,7 +278,7 @@ class Row(QWidget):
             pass
 
         try:
-            newValue = float(data.perChange)
+            newValue = float(data.highTradeExecutionRange)
         except Exception as e:
             pass
 
