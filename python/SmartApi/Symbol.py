@@ -7,10 +7,11 @@ import LocThread
 from enum import Enum
 
 
-class DerivativeTypes(Enum):
+class SymbolTypes(Enum):
     CE = 0
     PE = 1
     FUT = 2
+    Equity = 3
     NA = -1
 
 
@@ -48,7 +49,7 @@ class SymbolInfo:
         self.exch_seg = None
         self.tick_size = None
 
-        self.__symbolInstance = None
+        self._symbolInstance = None
 
     def getSubToken(self):
         return Exchange[self.exch_seg] + "|" + self.token
@@ -56,22 +57,24 @@ class SymbolInfo:
     def isDerivative(self):
         return "OPT" in self.instrumenttype
 
-    def getDrivativeType(self):
+    def getSymbolType(self):
         if (self.isDerivative()):
             if 'PE' in self.symbol:
-                return DerivativeTypes.PE
+                return SymbolTypes.PE
             elif 'CE' in self.symbol:
-                return DerivativeTypes.CE
+                return SymbolTypes.CE
             elif 'FUT' in self.symbol:
-                return DerivativeTypes.FUT
-        return DerivativeTypes.NA
+                return SymbolTypes.FUT
+            elif 'EQ' in self.symbol:
+                return SymbolTypes.Equity
+        return SymbolTypes.NA
 
     def getStrikePrice(self):
         return float(self.strike) / 100
     
     def getSymbolInstance(self):
-        self.__symbolInstance = Symbol(self) if self.__symbolInstance == None else self.__symbolInstance
-        return self.__symbolInstance
+        self._symbolInstance = Symbol(self) if self._symbolInstance == None else self._symbolInstance
+        return self._symbolInstance
 
     @staticmethod
     def fromJSON(data: dict):
@@ -94,19 +97,13 @@ class SymbolInfo:
 
 ## Equity, FUTURE, OPTION, INDICES
 # can have future and option
-class SymbolInfoEquity(SymbolInfo):
-    pass
 
 # can have options
 class SymbolInfoFuture(SymbolInfo):
     pass
 
-# 
-class SymbolInfoOption(SymbolInfo):
-    pass
-
 # can have future and options
-class SymbolInfoIndex(SymbolInfo):
+class SymbolInfoIndexAndEquity(SymbolInfo):
     def __init__(self):
         super().__init__()
 
@@ -115,6 +112,25 @@ class SymbolInfoIndex(SymbolInfo):
 
         # key (Expiry) value SymbolInfoOption
         self.__options = dict()
+    
+    @staticmethod
+    def createFromSymbolInfo(symbolInfo:SymbolInfo, symbolsInfo:list):
+        symbolInfoIndexAndEquity = SymbolInfoIndexAndEquity()
+        symbolInfoIndexAndEquity.token = symbolInfo.token
+        symbolInfoIndexAndEquity.symbol = symbolInfo.symbol
+        symbolInfoIndexAndEquity.name = symbolInfo.name
+        symbolInfoIndexAndEquity.expiry = symbolInfo.expiry
+        symbolInfoIndexAndEquity.strike = symbolInfo.strike
+        symbolInfoIndexAndEquity.lotsize = symbolInfo.lotsize
+        symbolInfoIndexAndEquity.instrumenttype = symbolInfo.instrumenttype
+        symbolInfoIndexAndEquity.exch_seg = symbolInfo.exch_seg
+        symbolInfoIndexAndEquity.tick_size = symbolInfo.tick_size
+
+        symbolInfoIndexAndEquity._symbolInstance = symbolInfo._symbolInstance
+
+        # symbolInfoIndexAndEquity.__futures = [fut for fut in symbolsInfo if fut.name == symbolInfoIndexAndEquity.name and fut.getSymbolType() == SymbolTypes.FUT]
+        symbolInfoIndexAndEquity.__options = [op for op in symbolsInfo if op.name == symbolInfoIndexAndEquity.name and (op.getSymbolType() == SymbolTypes.PE or op.getSymbolType() == SymbolTypes.CE)]
+        return symbolInfoIndexAndEquity
     
     def addFuture(self, symbolInfo:SymbolInfo):
         if symbolInfo.expiry not in self.__futures:
@@ -131,6 +147,7 @@ class SymbolsInfo:
 
     def __init__(self):
         self.ss = None
+        self.indices = []
         pass
 
     def load(self):
@@ -150,6 +167,11 @@ class SymbolsInfo:
 
         self.ss = [SymbolInfo.fromJSON(jd) for jd in jsonData]
         self.ss.sort(key=lambda x: x.symbol)
+        self.seprateIndices()
+
+    def seprateIndices(self):
+        if self.ss != None:
+            self.indices = [SymbolInfoIndexAndEquity.createFromSymbolInfo(si, self.ss) for si in self.ss if si.symbol == si.name and si.token in WatchList]
 
     def find(self, callback):
         res = list()
@@ -219,13 +241,24 @@ class Symbol(ISymbol):
     def __str__(self):
         return self.symbolInfo.__str__()
     
+class InstrumentType:
+    def __init__(self, name):
+        self.name = name
+        pass
+    
+class Exchange:
+    def __init__(self, name):
+        self.name = name
+
+        self.equity = None
+        self.indices = None
+        self.futureOptions = None
+        pass
+    
 def hello():
     pass
 
 if __name__ == '__main__':
     symbol = SymbolsInfo()
     symbol.load()
-    ls = symbol.find(lambda x: x.token == '26000')
-    ls[0].getSymbolInstance().subscribeOnFeedRecived(hello)
-    ls[0].getSymbolInstance().unSubscribeOnFeedRecived(hello)
     print()
